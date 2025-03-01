@@ -5,22 +5,30 @@ from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
 class Cholec80Dataset(Dataset):
-    def __init__(self, annotation_path, video_root, seq_length=16, mode='train'):
+    def __init__(self, annotation_dir, video_root, seq_length=16, mode='train'):
         self.samples = []
         self.seq_length = seq_length
         self.transform = self._get_transforms(mode)
         
-        with open(annotation_path) as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if len(row) != 4: continue  # Skip header
-                video_path, start, end, label = row
-                self.samples.append((
-                    os.path.join(video_root, video_path),
-                    int(start),
-                    int(end),
-                    int(label)
-                ))
+        # Load all annotation files
+        for ann_file in os.listdir(annotation_dir):
+            if not ann_file.endswith('.csv'):
+                continue
+                
+            video_name = os.path.splitext(ann_file)[0]
+            video_path = os.path.join(video_root, video_name)
+            
+            with open(os.path.join(annotation_dir, ann_file)) as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    start_frame, end_frame, phase = row
+                    self.samples.append((
+                        video_path,
+                        int(start_frame),
+                        int(end_frame),
+                        int(phase)
+                    ))
 
     def __len__(self):
         return len(self.samples)
