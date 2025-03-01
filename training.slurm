@@ -9,12 +9,11 @@
 #SBATCH --partition=gpu
 
 export NCCL_DEBUG=INFO
-export NCCL_SOCKET_IFNAME=eth0
 export MASTER_ADDR=$(scontrol show hostnames $SLURM_JOB_NODELIST | head -n1)
 export MASTER_PORT=29500
 
 srun python main.py \
-  --annotation_path /path/to/annotations.csv \
+  --annotation_dir /path/to/annotations \
   --video_root /path/to/video_frames \
   --batch_size 256 \
   --epochs 100 \
