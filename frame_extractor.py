@@ -71,7 +71,7 @@ def extract_frames(video_path, annotation_path, output_dir, image_format='jpg', 
         os.makedirs(phase_output_dir, exist_ok=True)
         
         # Save frame with consistent naming
-        frame_filename = f"{frame_number}.{image_format}"
+        frame_filename = f"{video_name}_frame_{frame_number:06d}.{image_format}"
         output_path = os.path.join(phase_output_dir, frame_filename)
         
         if image_format.lower() in ['jpg', 'jpeg']:
